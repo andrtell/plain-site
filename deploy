@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+HOST=$1
+if [[ -z $HOST ]]; then
+    echo "Host?" >&2
+    exit 1
+fi
+NAME=${HOST//./_} # tell.nu -> tell_nu
+APP="$(basename $(pwd))"
+echo "[ IMAGE ]"
+IMAGE=$( \
+    podman image ls -f "label=app=$APP" \
+    | tail -n +2 \
+    | fzf --height='~100%' \
+    | awk -F ' ' '{print $1 ":" $2}' \
+)
+if [[ -z "$IMAGE" ]]; then
+    exit 0
+fi
+echo
+echo -n "Continue with image [ ${IMAGE} ] and host [ ${HOST} ]"
+read -p " (y/N) " yn
+case $yn in
+    [Yy]*) :;;  
+    *) exit  0;;
+esac
+PODMAN_CONNECTION=${PODMAN_CONNECTION:-tell}
+REGISTRY=${REGISTRY:-registry.tell.nu}
+echo "[ PUSH ]"
+if ! podman push $IMAGE; then
+    if ! podman login $REGISTRY --get-login > /dev/null; then
+        echo "Logged out of registry '$REGISTRY'. Push failed." >&2
+    else
+        echo "Image push failed" >&2
+    fi
+    exit 1
+fi
+echo "[ PULL ]"
+if ! podman -r -c $PODMAN_CONNECTION pull $IMAGE; then
+    if ! podman -r -c $PODMAN_CONNECTION login $REGISTRY --get-login > /dev/null; then
+        echo "Logged out of registry '$REGISTRY' on remote. Pull failed." >&2
+    else
+        echo "Image pull on remote failed" >&2
+    fi
+    exit 1
+fi
+echo "[ DEPLOY ]"
+podman -r run \
+    -d \
+    --name $NAME \
+    --restart=always \
+    --replace \
+    --network='traefik' \
+    --label 'traefik.enable=true' \
+    --label "traefik.http.routers.$NAME.entrypoints=websecure" \
+    --label "traefik.http.routers.$NAME.rule=Host(\`$HOST\`)" \
+    --label "traefik.http.routers.$NAME.tls=true" \
+    --label='traefik.http.routers.$NAME.tls.certresolver=letsencrypt' \
+    --label "application=$APP" \
+    --label "git=$GIT" \
+    "$IMAGE"
+echo "[ LOGS ]"
+podman -r logs -f $NAME

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+if [[ ! -d .git ]]
+then
+    echo "Git?" >&2
+    exit 1
+fi
+if [[ ! ( -f Dockerfile || -f Containerfile ) ]]
+then
+    echo "Dockerfile?" >&2
+    exit 1
+fi
+REGISTRY=${REGISTRY:-registry.tell.nu}
+BRANCH=$(git branch --show-current)
+if [[ $(git diff --exit-code) && $(git diff --cached --exit-code) ]]
+then
+    COMMIT=$(git log -1 --pretty=format:%h)
+else
+    COMMIT="dirty"
+fi
+TAG="$BRANCH-$COMMIT"
+NAME="$(basename $(pwd))"
+IMAGE="$REGISTRY/$NAME:$TAG"
+podman build \
+    --tag $IMAGE \
+    --label "app=$NAME" \
+    --label "branch=$BRANCH" \
+    --label "commit=$COMMIT" \
+    .

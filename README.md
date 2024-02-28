@@ -1,2 +1,3 @@
-# plain-site
-Simple HTML, CSS &amp; JS site template
+# Plain site
+
+Empty index.html, styles.css and script.js file with Dockerfile and deployment script.
