@@ -35,7 +35,7 @@ Before you continue, read both scripts and make changes to suit your specific se
 To setup a remote machine to work with the `deploy` script see:
 
 * [Basic VM](https://github.com/andrtell/basic-vm)
-* [Traefik VM](https://github.com/andrtell/treafik-vm)
+* [Traefik VM](https://github.com/andrtell/traefik-vm)
 * [Registry VM](https://github.com/andrtell/registry-vm) 
 
 ## Workflow
