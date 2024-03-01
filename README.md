@@ -12,7 +12,6 @@ cd <DIR>
 rm -rf .git
 git init
 ```
-
 ### Local server
 
 To serve your site locally you could use:
@@ -21,9 +20,9 @@ To serve your site locally you could use:
 python -m 'http.server' -d ./site 8080
 ```
 
-Or try [Devs](https://github.com/andrtell/devs).
+Or try [Devs](https://github.com/andrtell/devs) (a node.js hack with live reload).
 
-Or anyone of the gazillion options out there...
+(... or any of the gazillion options out there).
 
 ## Images, Containers and Deployment
 
@@ -33,11 +32,11 @@ These scripts are *very* opinionated. No attempts are made to generalize their u
 
 Before you continue, read both scripts and make changes to suit your specific setup.
 
-To setup a remote machine to work with `deploy` script see:
+To setup a remote machine to work with the `deploy` script see:
 
-[Basic VM](https://github.com/andrtell/basic-vm)
-[Traefik VM](https://github.com/andrtell/treafik-vm)
-[Registry VM](https://github.com/andrtell/registry-vm) 
+* [Basic VM](https://github.com/andrtell/basic-vm)
+* [Traefik VM](https://github.com/andrtell/treafik-vm)
+* [Registry VM](https://github.com/andrtell/registry-vm) 
 
 ## Workflow
 
@@ -49,6 +48,8 @@ vim ./site/index.html
 ./deploy mysite.tell.nu
 ```
 
-Open `https://mysite.tell.nu`.
+Then visit: 
 
-*Ok, that is it!*
+`https://mysite.tell.nu`
+
+**Ok, that is it!**
