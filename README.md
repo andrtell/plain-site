@@ -1,6 +1,6 @@
-# Quick site
+# Quick Static Site
 
-Quick static HTML site.
+My own quick and dirty way to get started with a static HTML site.
 
 ## Setup
 
